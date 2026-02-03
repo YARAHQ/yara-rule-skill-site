@@ -439,11 +439,22 @@
             <div class="screen-content">
                 <p class="info">Add to your LLM agent's context:</p>
                 
-                <pre><code><span class="comment"># Download</span>
-curl -L -o yara-rule-skill.skill \
-  https://github.com/YARAHQ/...
+                <p style="margin-top: 1rem; color: #80ff80;">OPTION_1: Clone and Copy (Recommended)</p>
+                <pre><code><span class="comment"># Clone the repository</span>
+git clone https://github.com/YARAHQ/yara-rule-skill.git
 
-<span class="comment"># Install</span>
+<span class="comment"># Copy to your agent's skills folder</span>
+cp -r yara-rule-skill ~/.openclaw/skills/</code></pre>
+
+                <p style="margin-top: 1rem; color: #80ff80;">OPTION_2: Package as .skill File</p>
+                <pre><code><span class="comment"># Clone the repository</span>
+git clone https://github.com/YARAHQ/yara-rule-skill.git
+cd yara-rule-skill
+
+<span class="comment"># Package the skill</span>
+python3 scripts/package_skill.py .
+
+<span class="comment"># Install the packaged skill</span>
 cp yara-rule-skill.skill ~/.openclaw/skills/</code></pre>
                 
                 <p class="ok">Ready. Start conversation about YARA rules.</p>
