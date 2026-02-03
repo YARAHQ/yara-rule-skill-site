@@ -430,9 +430,10 @@
                 <pre><code><span class="comment">// CATASTROPHIC PERFORMANCE</span>
 <span class="keyword">rule</span> Big_Numbers0 {
 <span class="keyword">    strings</span>:
-    <span class="var">$c0</span> = <span class="string">/[0-9a-fA-F]{20}/</span> fullword
+        <span class="var">$c0</span> = <span class="string">/[0-9a-fA-F]{20}/</span> fullword
 <span class="keyword">    condition</span>:
-    <span class="var">$c0</span> }</code></pre>
+        <span class="var">$c0</span>
+}</code></pre>
                 
                 <div class="err">RE1: No fixed anchor. Forces naïve matching at every offset.</div>
                 <div class="ok">Fix: /hash[=:][0-9a-fA-F]{20}/</div>
@@ -440,9 +441,10 @@
                 <pre style="margin-top: 1rem;"><code><span class="comment">// LOGIC ERROR</span>
 <span class="keyword">rule</span> HKTL_Mimikatz {
 <span class="keyword">    strings</span>:
-    <span class="var">$x1</span> = <span class="string">"\LsaDump.exe"</span> fullword
+        <span class="var">$x1</span> = <span class="string">"\LsaDump.exe"</span> fullword
 <span class="keyword">    condition</span>:
-    <span class="var">$x1</span> }</code></pre>
+        <span class="var">$x1</span>
+}</code></pre>
                 
                 <div class="err">SM4: fullword + leading \ = never matches paths</div>
                 <div class="ok">Fix: Remove fullword</div>
