@@ -6,9 +6,9 @@
     <title>YARA Rule Skill [CRT]</title>
     <style>
         :root {
-            --phosphor: #ffb000;
-            --phosphor-dim: #b8860b;
-            --phosphor-glow: rgba(255, 176, 0, 0.4);
+            --phosphor: #adff00;
+            --phosphor-dim: #7ab300;
+            --phosphor-glow: rgba(173, 255, 0, 0.4);
             --bg: #0c0c0c;
             --bg-grid: #141414;
         }
@@ -142,8 +142,8 @@
                 90deg,
                 transparent,
                 transparent 2px,
-                rgba(255, 176, 0, 0.02) 2px,
-                rgba(255, 176, 0, 0.02) 4px
+                rgba(173, 255, 0, 0.02) 2px,
+                rgba(173, 255, 0, 0.02) 4px
             );
             pointer-events: none;
         }
@@ -203,7 +203,7 @@
         .var { color: #ff8080; }
 
         /* Status indicators */
-        .ok::before { content: "[OK] "; color: #80ff80; }
+        .ok::before { content: "[OK] "; color: #adff00; }
         .warn::before { content: "[WARN] "; color: #ffaa00; }
         .err::before { content: "[ERR] "; color: #ff5555; }
         .info::before { content: "[INFO] "; color: #55aaff; }
@@ -414,7 +414,7 @@
                     <li><span class="tag">TR1-4</span> Triad patterns</li>
                 </ul>
 
-                <p style="margin-top: 1rem; color: #80ff80;">FORMATTING (6)</p>
+                <p style="margin-top: 1rem; color: #adff00;">FORMATTING (6)</p>
                 <ul class="check-list">
                     <li><span class="tag">ID1-2</span> Indentation</li>
                     <li><span class="tag">FM1-3</span> Condition formatting</li>
@@ -454,14 +454,14 @@
             <div class="screen-content">
                 <p class="info">Add to your LLM agent's context:</p>
                 
-                <p style="margin-top: 1rem; color: #80ff80;">OPTION_1: Clone and Copy (Recommended)</p>
+                <p style="margin-top: 1rem; color: #adff00;">OPTION_1: Clone and Copy (Recommended)</p>
                 <pre><code><span class="comment"># Clone the repository</span>
 git clone https://github.com/YARAHQ/yara-rule-skill.git
 
 <span class="comment"># Copy to your agent's skills folder</span>
 cp -r yara-rule-skill ~/.openclaw/skills/</code></pre>
 
-                <p style="margin-top: 1rem; color: #80ff80;">OPTION_2: Package as .skill File</p>
+                <p style="margin-top: 1rem; color: #adff00;">OPTION_2: Package as .skill File</p>
                 <pre><code><span class="comment"># Clone the repository</span>
 git clone https://github.com/YARAHQ/yara-rule-skill.git
 cd yara-rule-skill
