@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a1a">
+    <title>YARA Rule Skill — LLM Agent Skill for YARA Rule Expertise</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #252525;
+            --bg-card: #2d2d2d;
+            --bg-elevated: #333333;
+            --text-primary: #f5f5f5;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --accent: #f4d03f;
+            --accent-dark: #d4ac0d;
+            --error: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --success: #2ecc71;
+            --focus-ring: 0 0 0 3px rgba(244, 208, 63, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            color-scheme: dark;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* Focus states - never outline-none without replacement */
+        *:focus {
+            outline: none;
+        }
+
+        *:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+            border-radius: 4px;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            box-shadow: var(--focus-ring);
+        }
+
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 8px 16px;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .logo {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .tagline {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 0.375rem 0.875rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 1.25rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .container {
+                padding: 0 2rem;
+            }
+        }
+
+        /* Sections */
+        section {
+            padding: 3rem 0;
+        }
+
+        @media (min-width: 640px) {
+            section {
+                padding: 4rem 0;
+            }
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-weight: 700;
+            scroll-margin-top: 2rem;
+        }
+
+        h3 {
+            font-size: clamp(1.125rem, 3vw, 1.25rem);
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            max-width: 70ch;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            display: grid;
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .use-cases {
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        .use-case {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--accent);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        @media (min-width: 640px) {
+            .use-case {
+                padding: 1.5rem;
+            }
+        }
+
+        .use-case:hover {
+            transform: translateY(-2px);
+            background-color: var(--bg-elevated);
+        }
+
+        .use-case h3 {
+            margin-top: 0;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .use-case-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            color: var(--bg-primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .example {
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            padding: 0.875rem 1rem;
+            margin-top: 1rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent-dark);
+            overflow-x: auto;
+        }
+
+        .example::before {
+            content: "💬 ";
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .features {
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        .feature {
+            background: var(--bg-card);
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-2px);
+            background-color: var(--bg-elevated);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        @media (min-width: 640px) {
+            .feature-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        .feature h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .feature p {
+            font-size: 0.9375rem;
+            margin-bottom: 0;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            border: 1px solid var(--bg-elevated);
+        }
+
+        @media (min-width: 640px) {
+            .code-block {
+                padding: 1.5rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        .code-block .comment { color: #6a9955; }
+        .code-block .keyword { color: #569cd6; }
+        .code-block .string { color: #ce9178; }
+        .code-block .variable { color: #9cdcfe; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .btn:hover {
+            background: var(--accent-dark);
+            border-color: var(--accent-dark);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Checks */
+        .checks {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .checks {
+                padding: 1.5rem;
+            }
+        }
+
+        .check-item {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .check-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        .check-logic { background: var(--error); color: white; }
+        .check-perf { background: var(--warning); color: var(--bg-primary); }
+        .check-style { background: var(--info); color: white; }
+        .check-resource { background: var(--success); color: var(--bg-primary); }
+
+        .check-desc {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-top: 1px solid var(--bg-card);
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        footer a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        /* Typography improvements */
+        .ellipsis::after {
+            content: "…";
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            header {
+                padding: 2.5rem 1rem 2rem;
+            }
+
+            .btn {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header role="banner">
+        <div class="logo">YARA <span>Rule Skill</span></div>
+        <p class="tagline">An LLM Agent Skill that embeds expert YARA knowledge into your AI assistant. Get professional rule reviews, performance optimization, and quality checks—just by asking.</p>
+        <span class="badge">LLM Agent Skill</span>
+    </header>
+
+    <main id="main-content">
+        <section>
+            <div class="container">
+                <h2>🎯 How It Works</h2>
+                <p>Add the skill to your LLM agent's context, then simply ask. The expertise is embedded—no external tools needed.</p>
+                
+                <div class="use-cases">
+                    <article class="use-case">
+                        <h3><span class="use-case-number" aria-hidden="true">1</span>Review Your Rules</h3>
+                        <p>Paste a rule you're writing and get instant expert feedback. The skill checks naming conventions, string atoms, condition logic, and metadata—all from the embedded knowledge.</p>
+                        <div class="example" role="note" aria-label="Example prompt">"Review this YARA rule and suggest improvements"</div>
+                    </article>
+
+                    <article class="use-case">
+                        <h3><span class="use-case-number" aria-hidden="true">2</span>Evaluate Public Rules</h3>
+                        <p>Before deploying a rule from GitHub, paste it and ask for assessment. The skill applies all 20+ yaraQA checks automatically.</p>
+                        <div class="example" role="note" aria-label="Example prompt">"Assess the quality of this rule I found online"</div>
+                    </article>
+
+                    <article class="use-case">
+                        <h3><span class="use-case-number" aria-hidden="true">3</span>Debug Performance</h3>
+                        <p>Slow scans? Paste the rule and ask why. The skill identifies unanchored regex, short atoms, expensive calculations, and module misuse.</p>
+                        <div class="example" role="note" aria-label="Example prompt">"This rule causes performance issues, why?"</div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section style="background: var(--bg-secondary);">
+            <div class="container">
+                <h2>✨ Embedded Expertise</h2>
+                <p>The skill packages three authoritative sources into your AI assistant's context: YARA Performance Guidelines, YARA Style Guide, and all 20+ yaraQA checks.</p>
+                
+                <div class="features">
+                    <article class="feature">
+                        <div class="feature-icon" aria-hidden="true">📋</div>
+                        <h4>20+ Quality Checks</h4>
+                        <p>Logic errors, performance issues, and style violations detected through embedded yaraQA rules.</p>
+                    </article>
+                    
+                    <article class="feature">
+                        <div class="feature-icon" aria-hidden="true">⚡</div>
+                        <h4>Performance Guide</h4>
+                        <p>Atom selection, regex anchoring, condition ordering—all the performance guidelines embedded in context.</p>
+                    </article>
+                    
+                    <article class="feature">
+                        <div class="feature-icon" aria-hidden="true">🏷️</div>
+                        <h4>Style Standards</h4>
+                        <p>Naming conventions (MAL, HKTL, SUSP, EXPL), metadata requirements, and formatting rules.</p>
+                    </article>
+                    
+                    <article class="feature">
+                        <div class="feature-icon" aria-hidden="true">🔍</div>
+                        <h4>Rule Patterns</h4>
+                        <p>The $x*, $s*, $a*, $fp* string naming pattern and effective condition structures.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <h2>🔍 What It Knows</h2>
+                <p>When you paste a rule, the skill applies all 20+ yaraQA checks from embedded knowledge:</p>
+                
+                <div class="checks">
+                    <h3>Logic Errors</h3>
+                    <div class="check-item">
+                        <span class="check-category check-logic">CE1</span>
+                        <span class="check-desc">Conditions that never match (e.g., <code>2 of them</code> with only 1 string)</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-logic">SM2-6</span>
+                        <span class="check-desc">Modifier misuse (PDB with <code>wide</code>, paths with <code>fullword</code>)</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-logic">CS1</span>
+                        <span class="check-desc">String is substring of another (redundant)</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-logic">DU1</span>
+                        <span class="check-desc">Logical duplicate rules</span>
+                    </div>
+                    
+                    <h3 style="margin-top: 1.5rem;">Performance Issues</h3>
+                    <div class="check-item">
+                        <span class="check-category check-perf">PA1-2</span>
+                        <span class="check-desc">Short atoms (&lt; 4 bytes) causing slow scans</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-perf">RE1</span>
+                        <span class="check-desc">Regex without 4+ byte anchors</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-perf">CF1-2</span>
+                        <span class="check-desc">Expensive calculations in wrong order</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-perf">MO1</span>
+                        <span class="check-desc">Rare module usage slowing scans</span>
+                    </div>
+                    
+                    <h3 style="margin-top: 1.5rem;">Style &amp; Resources</h3>
+                    <div class="check-item">
+                        <span class="check-category check-style">SV1-2</span>
+                        <span class="check-desc">Repeating chars, hex strings that should be text</span>
+                    </div>
+                    <div class="check-item">
+                        <span class="check-category check-resource">HS1-4</span>
+                        <span class="check-desc">Too many strings or regex patterns</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="background: var(--bg-secondary);">
+            <div class="container">
+                <h2>📝 Example Conversation</h2>
+                <p>You paste a rule and ask. The skill—through your AI assistant—responds with specific issues:</p>
+                
+                <div class="code-block" role="region" aria-label="Example YARA rule">
+<span class="comment">// Rule from public repository</span>
+<span class="keyword">rule</span> Big_Numbers0
+{
+    <span class="keyword">meta</span>:
+        author = <span class="string">"_pusher_"</span>
+        description = <span class="string">"Looks for big numbers 20:sized"</span>
+    <span class="keyword">strings</span>:
+        <span class="variable">$c0</span> = <span class="string">/[0-9a-fA-F]{20}/</span> fullword ascii
+    <span class="keyword">condition</span>:
+        <span class="variable">$c0</span>
+}
+                </div>
+                
+                <p><strong>🔴 Critical Issue (RE1):</strong> This regex has <strong>NO fixed anchor</strong>. YARA cannot extract a 4-byte atom, forcing naïve matching at every offset. This will cause catastrophic performance.</p>
+                
+                <p><strong>✅ Fix:</strong> Add context: <code>/hash[=:][0-9a-fA-F]{20}/</code> or use specific prefixes.</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <h2>⚡ Install</h2>
+                <p>Add the skill to your LLM agent's context. The expertise loads when YARA rules are discussed.</p>
+                
+                <div class="code-block" role="region" aria-label="Installation commands">
+<span class="comment"># Download</span>
+$ curl -L -o yara-rule-skill.skill https://github.com/YARAHQ/yara-rule-skill/releases/latest/download/yara-rule-skill.skill
+
+<span class="comment"># Add to your agent's skills folder</span>
+<span class="comment"># (location varies by platform: OpenClaw, Claude Desktop, etc.)</span>
+$ cp yara-rule-skill.skill ~/.openclaw/skills/
+                </div>
+                
+                <p>Then start a conversation about YARA rules.</p>
+                
+                <a href="https://github.com/YARAHQ/yara-rule-skill" class="btn">View on GitHub</a>
+                <a href="https://github.com/YARAHQ/yara-rule-skill/releases" class="btn btn-outline">Download</a>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <p>Part of <a href="https://github.com/YARAHQ">YARA HQ</a>—Community tools for YARA excellence</p>
+            <p>Based on <a href="https://github.com/Neo23x0/YARA-Performance-Guidelines">YARA Performance Guidelines</a>, 
+               <a href="https://github.com/Neo23x0/YARA-Style-Guide">YARA Style Guide</a>, and 
+               <a href="https://github.com/Neo23x0/yaraQA">yaraQA</a> by 
+               <a href="https://twitter.com/cyb3rops">Florian Roth</a></p>
+        </div>
+    </footer>
+</body>
+</html>
