@@ -588,19 +588,20 @@
 
         <section style="background: var(--bg-secondary);">
             <div class="container">
-                <h2>📝 Example Conversation</h2>
+                <h2>📝 Example Conversations</h2>
                 <p>You paste a rule and ask. The skill—through your AI assistant—responds with specific issues:</p>
                 
-                <div class="code-block" role="region" aria-label="Example YARA rule">
-<span class="comment">// Rule from public repository</span>
+                <h3>Example 1: Performance Disaster</h3>
+                <div class="code-block" role="region" aria-label="Example YARA rule with performance issue">
+<span class="comment">// Rule from public repository - CATASTROPHIC PERFORMANCE</span>
 <span class="keyword">rule</span> Big_Numbers0
 {
-    <span class="keyword">meta</span>:
+<span class="keyword">    meta</span>:
         author = <span class="string">"_pusher_"</span>
         description = <span class="string">"Looks for big numbers 20:sized"</span>
-    <span class="keyword">strings</span>:
+<span class="keyword">    strings</span>:
         <span class="variable">$c0</span> = <span class="string">/[0-9a-fA-F]{20}/</span> fullword ascii
-    <span class="keyword">condition</span>:
+<span class="keyword">    condition</span>:
         <span class="variable">$c0</span>
 }
                 </div>
@@ -608,6 +609,48 @@
                 <p><strong>🔴 Critical Issue (RE1):</strong> This regex has <strong>NO fixed anchor</strong>. YARA cannot extract a 4-byte atom, forcing naïve matching at every offset. This will cause catastrophic performance.</p>
                 
                 <p><strong>✅ Fix:</strong> Add context: <code>/hash[=:][0-9a-fA-F]{20}/</code> or use specific prefixes.</p>
+                
+                <h3>Example 2: Style Issues</h3>
+                <div class="code-block" role="region" aria-label="Example YARA rule with style issues">
+<span class="comment">// Rule with multiple style issues</span>
+<span class="keyword">rule</span> MyRule
+{
+<span class="keyword">    meta</span>:
+        description = <span class="string">"Detects malware"</span>
+        author = <span class="string">"analyst"</span>
+<span class="keyword">    strings</span>:
+        <span class="variable">$a</span> = <span class="string">"MZ"</span>
+        <span class="variable">$string1</span> = { 65 76 61 72 6d 20 62 65 6c 6f 77 20 66 6f 72 20 73 74 72 75 74 20 }
+        <span class="variable">$b</span> = <span class="string">"cmd.exe"</span> nocase
+<span class="keyword">    condition</span>:
+        <span class="variable">$a</span> at 0 and <span class="variable">$b</span>
+}
+                </div>
+                
+                <p><strong>🟡 Style Issue (SV2):</strong> Hex string can be written as readable text. Use <code>"Alarm below for strut "</code> instead of hex bytes.</p>
+                
+                <p><strong>🟡 Performance Issue (PA1):</strong> Short string <code>"MZ"</code> at position 0 should use <code>uint16(0) == 0x5A4D</code> instead.</p>
+                
+                <p><strong>🔵 Style Issue:</strong> Rule name doesn't follow convention. Use <code>MAL_MyMalware_Win32_Trojan_Mar24</code> format.</p>
+                
+                <h3>Example 3: Logic Error (Fullword Misuse)</h3>
+                <div class="code-block" role="region" aria-label="Example YARA rule with fullword logic error">
+<span class="comment">// Syntactically correct but dysfunctional</span>
+<span class="keyword">rule</span> HKTL_Mimikatz_Lsass_Dump
+{
+<span class="keyword">    meta</span>:
+        description = <span class="string">"Detects LSASS dump tool"</span>
+        author = <span class="string">"analyst"</span>
+<span class="keyword">    strings</span>:
+        <span class="variable">$x1</span> = <span class="string">"\LsaDump.exe"</span> fullword
+<span class="keyword">    condition</span>:
+        <span class="variable">$x1</span>
+}
+                </div>
+                
+                <p><strong>🔴 Logic Error (SM4):</strong> String starts with <code>\</code> but uses <code>fullword</code>. This will NEVER match on actual paths like <code>C:\Windows\LsaDump.exe</code> because the backslash creates a word boundary that <code>fullword</code> expects on both sides.</p>
+                
+                <p><strong>✅ Fix:</strong> Remove <code>fullword</code>: <code>$x1 = "\LsaDump.exe"</code></p>
             </div>
         </section>
 
