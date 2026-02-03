@@ -383,26 +383,41 @@
         <div class="screen">
             <div class="screen-header">QUALITY_CHECKS</div>
             <div class="screen-content">
-                <p class="info">All 20+ yaraQA checks from embedded knowledge:</p>
+                <p class="info">63 total checks and guidelines from embedded knowledge:</p>
                 
-                <p style="margin-top: 1rem; color: #ff5555;">LOGIC_ERRORS</p>
+                <p style="margin-top: 1rem; color: #ff5555;">LOGIC_ERRORS (11)</p>
                 <ul class="check-list">
                     <li><span class="tag">CE1</span> Conditions that never match</li>
-                    <li><span class="tag">SM2-6</span> Modifier misuse</li>
-                    <li><span class="tag">CS1</span> String is substring (redundant)</li>
+                    <li><span class="tag">SM1-6</span> String modifier issues</li>
+                    <li><span class="tag">DS1</span> Duplicate strings</li>
+                    <li><span class="tag">CS1</span> String is substring</li>
+                    <li><span class="tag">DU1</span> Duplicate rules</li>
                 </ul>
 
-                <p style="margin-top: 1rem; color: #ffaa00;">PERFORMANCE</p>
+                <p style="margin-top: 1rem; color: #ffaa00;">PERFORMANCE (16)</p>
                 <ul class="check-list">
                     <li><span class="tag">PA1-2</span> Short atoms (&lt;4 bytes)</li>
                     <li><span class="tag">RE1</span> Regex without anchors</li>
-                    <li><span class="tag">CF1-2</span> Expensive calculations order</li>
+                    <li><span class="tag">CF1-2</span> Expensive calculations</li>
+                    <li><span class="tag">PI1</span> Regex performance impact</li>
+                    <li><span class="tag">MO1</span> Rare module usage</li>
+                    <li><span class="tag">RX1-7</span> Extended performance checks</li>
                 </ul>
 
-                <p style="margin-top: 1rem; color: #55aaff;">STYLE</p>
+                <p style="margin-top: 1rem; color: #55aaff;">STYLE & CONVENTION (30)</p>
                 <ul class="check-list">
-                    <li><span class="tag">SV1-2</span> Hex as text, repeating chars</li>
-                    <li><span class="tag">HS1-4</span> Too many strings/regex</li>
+                    <li><span class="tag">SV1-2</span> String value issues</li>
+                    <li><span class="tag">HS1-4</span> String/regex count</li>
+                    <li><span class="tag">NC1-6</span> Naming conventions</li>
+                    <li><span class="tag">MF1-12</span> Metadata fields</li>
+                    <li><span class="tag">SS1-4</span> String style</li>
+                    <li><span class="tag">TR1-4</span> Triad patterns</li>
+                </ul>
+
+                <p style="margin-top: 1rem; color: #80ff80;">FORMATTING (6)</p>
+                <ul class="check-list">
+                    <li><span class="tag">ID1-2</span> Indentation</li>
+                    <li><span class="tag">FM1-3</span> Condition formatting</li>
                 </ul>
             </div>
         </div>
